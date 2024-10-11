@@ -4,20 +4,23 @@
     "password": "mxy5201314",
     "database": "clwy_api",
     "host": "144.24.204.73",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08:00"
   },
   "test": {
     "username": "root",
     "password": "mxy5201314",
     "database": "clwy_api",
     "host": "144.24.204.73",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08:00"
   },
   "production": {
     "username": "root",
     "password": "mxy5201314",
     "database": "clwy_api",
     "host": "144.24.204.73",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08:00"
   }
 }
