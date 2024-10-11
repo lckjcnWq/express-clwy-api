@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "mxy5201314",
+    "database": "clwy_api",
+    "host": "144.24.204.73",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "mxy5201314",
+    "database": "clwy_api",
+    "host": "144.24.204.73",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "mxy5201314",
+    "database": "clwy_api",
+    "host": "144.24.204.73",
+    "dialect": "mysql"
+  }
+}
