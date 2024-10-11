@@ -28,4 +28,30 @@ router.get('/', async function(req, res, next) {
     }
 });
 
+router.get('/:id', async function(req, res, next) {
+
+    try {
+        const {id} = req.params
+        const atricle = await Article.findByPk(id)
+        if(atricle){
+            res.json({
+                status: true,
+                message: '查询文章成功',
+                data: atricle
+            });
+        }else {
+            res.status(404).json({
+                status: false,
+                message: '文章不存在'
+            });
+        }
+    } catch (e) {
+        res.json({
+            status: false,
+            message: '查询文章失败',
+            errors:[e.message]
+        });
+    }
+});
+
 module.exports = router;
