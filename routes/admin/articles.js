@@ -154,4 +154,47 @@ router.put('/:id', async function(req, res, next) {
     }
 });
 
+//分页查询文章列表
+router.get('/page', async function(req, res, next) {
+    try {
+        const query = req.query
+        const currentPage = Math.abs(Number(query.currentPage)) || 1
+        const pageSize = Math.abs(Number(query.pageSize)) || 1
+        const offset = (currentPage - 1) * pageSize
+        const condition = {
+            order: [['id', 'ASC']],
+            offset:offset,
+            limit: pageSize
+        }
+        // 如果有 title 查询参数，就添加到 where 条件中
+        if (query.title) {
+            condition.where = {
+                title: {
+                    [Op.like]: `%${query.title}%`
+                }
+            };
+        }
+        const {count, rows} = await Article.findAndCountAll(condition)
+        // 返回查询结果
+        res.json({
+            status: true,
+            message: '查询文章列表成功。',
+            data: {
+                articles: rows,
+                pagination: {
+                    total: count,
+                    currentPage,
+                    pageSize,
+                },
+            }
+        });
+    }catch (e) {
+        res.status(500).json({
+            status: false,
+            message: '查询文章列表失败。',
+            errors: [e.message]
+        });
+    }
+})
+
 module.exports = router;
