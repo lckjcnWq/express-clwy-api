@@ -28,8 +28,32 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.get('/:id', async function(req, res, next) {
+router.delete('/:id', async function(req, res, next) {
+    try {
+        const {id} = req.params
+        const atricle = await Article.findByPk(id)
+        if(atricle){
+            await atricle.destroy()
+            res.json({
+                status: true,
+                message: '删除文章成功',
+            });
+        }else {
+            res.status(404).json({
+                status: false,
+                message: '删除文件失败'
+            });
+        }
+    } catch (e) {
+        res.json({
+            status: false,
+            message: '删除文件失败',
+            errors:[e.message]
+        });
+    }
+});
 
+router.get('/:id', async function(req, res, next) {
     try {
         const {id} = req.params
         const atricle = await Article.findByPk(id)
@@ -53,5 +77,6 @@ router.get('/:id', async function(req, res, next) {
         });
     }
 });
+
 
 module.exports = router;
