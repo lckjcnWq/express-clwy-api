@@ -14,7 +14,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Article.init({
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        notNull:{
+          msg: 'Title is required'
+        },
+        notEmpty: {
+          msg: '标题不能为空。'
+        },
+        len: {
+          args: [1, 45],
+          msg: '标题长度需要在1 ~ 45个字符之间。'
+        }
+      }
+    },
     content: DataTypes.TEXT
   }, {
     sequelize,
