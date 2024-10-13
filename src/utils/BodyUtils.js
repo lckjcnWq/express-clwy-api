@@ -12,7 +12,17 @@ function filterCategoryBody(req) {
         rank:req.body.rank
     };
 }
+
+function filterSettingBody(req) {
+    return {
+        name: req.body.name,
+        icp: req.body.icp,
+        copyright: req.body.copyright
+    };
+}
+
 module.exports = {
     filterBody,
-    filterCategoryBody
+    filterCategoryBody,
+    filterSettingBody
 };
