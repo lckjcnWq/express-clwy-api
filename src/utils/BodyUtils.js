@@ -5,6 +5,14 @@ function filterBody(req) {
       content:req.body.content
     };
 }
+
+function filterCategoryBody(req) {
+    return {
+        name: req.body.name,
+        rank:req.body.rank
+    };
+}
 module.exports = {
-    filterBody
+    filterBody,
+    filterCategoryBody
 };
