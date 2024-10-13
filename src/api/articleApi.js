@@ -1,4 +1,4 @@
-const {Article,Category,Setting} = require('../../models');
+const {Article,Category,Setting,User} = require('../../models');
 const { NotFoundError } = require('../../src/bean/NotFoundError');
 
 async function getArticle(req) {
@@ -30,8 +30,19 @@ async function getSetting(req) {
     return setting;
 }
 
+async function getUser(req) {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+        throw new NotFoundError('初始系统用户未找到，请运行种子文件。')
+    }
+
+    return user;
+}
+
 module.exports = {
     getArticle,
     getCategory,
-    getSetting
+    getSetting,
+    getUser
 }
