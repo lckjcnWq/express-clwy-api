@@ -19,6 +19,11 @@ const adminChapterRouter = require('./routes/admin/chapters');
 const adminChartsRouter = require('./routes/admin/charts');
 const adminAuthRouter = require('./routes/admin/auth');
 
+//前端路由文件
+const categoriesRouter = require('./routes/js/categories');
+const coursesRouter = require('./routes/js/courses');
+
+
 const app = express();
 
 app.use(logger('dev'));
@@ -38,4 +43,7 @@ app.use('/admin/chapter', adminAuth,adminChapterRouter);
 app.use('/admin/charts', adminAuth,adminChartsRouter);
 app.use('/admin/auths', adminAuthRouter);
 
+//前端路由
+app.use('/js/categories', categoriesRouter);
+app.use('/js/courses', coursesRouter);
 module.exports = app;
