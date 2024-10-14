@@ -21,7 +21,30 @@ function fail(res, message, data = {}, code = 400) {
     });
 }
 
+function failure(res,error){
+    if(error.name === 'BadRequestError'){
+        return res.status(400).json({
+            status: false,
+            message:'请求参数错误',
+            data:[error.message]
+        })
+    }
+    if (error.name === 'UnauthorizedError') {
+        return res.status(401).json({
+            status: false,
+            message: '认证失败',
+            data: [error.message]
+        });
+    }
+    return res.status(400).json({
+        status: false,
+        message: '其它错误',
+        data: [error.message]
+    });
+}
+
 module.exports = {
     success,
-    fail
+    fail,
+    failure
 }

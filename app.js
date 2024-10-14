@@ -14,6 +14,7 @@ const adminUserRouter = require('./routes/admin/user');
 const adminCourseRouter = require('./routes/admin/course');
 const adminChapterRouter = require('./routes/admin/chapters');
 const adminChartsRouter = require('./routes/admin/charts');
+const adminAuthRouter = require('./routes/admin/auth');
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use('/admin/user', adminUserRouter);
 app.use('/admin/course', adminCourseRouter);
 app.use('/admin/chapter', adminChapterRouter);
 app.use('/admin/charts', adminChartsRouter);
+app.use('/admin/auths', adminAuthRouter);
 
 module.exports = app;
