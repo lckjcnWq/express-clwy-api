@@ -6,6 +6,9 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+//
+const adminAuth = require('./src/middlewares/admin-auth');
+require('dotenv').config();
 //后台路由文件
 const adminArticleRouter = require('./routes/admin/articles');
 const adminCategoriesRouter = require('./routes/admin/categories');
@@ -25,14 +28,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/admin/articles', adminArticleRouter);
-app.use('/admin/categories', adminCategoriesRouter);
-app.use('/admin/set', adminSettingRouter);
-app.use('/admin/user', adminUserRouter);
-app.use('/admin/course', adminCourseRouter);
-app.use('/admin/chapter', adminChapterRouter);
-app.use('/admin/charts', adminChartsRouter);
+app.use('/users', adminAuth,usersRouter);
+app.use('/admin/articles',adminAuth, adminArticleRouter);
+app.use('/admin/categories', adminAuth,adminCategoriesRouter);
+app.use('/admin/set', adminAuth,adminSettingRouter);
+app.use('/admin/user', adminAuth,adminUserRouter);
+app.use('/admin/course', adminAuth,adminCourseRouter);
+app.use('/admin/chapter', adminAuth,adminChapterRouter);
+app.use('/admin/charts', adminAuth,adminChartsRouter);
 app.use('/admin/auths', adminAuthRouter);
 
 module.exports = app;

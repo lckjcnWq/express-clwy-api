@@ -36,6 +36,21 @@ function failure(res,error){
             data: [error.message]
         });
     }
+    if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            status: false,
+            message: '认证失败',
+            data: ['您提交的 token 错误。']
+        });
+    }
+
+    if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({
+            status: false,
+            message: '认证失败',
+            data: ['您的 token 已过期。']
+        });
+    }
     return res.status(400).json({
         status: false,
         message: '其它错误',

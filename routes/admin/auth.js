@@ -47,10 +47,7 @@ router.post('/sign_in', async (req, res) => {
         }
 
         const token = jwt.sign({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role
+            userId: user.id,
         }, process.env.SECRET, { expiresIn: '1d' });
 
         success(res, '登录成功。', token);
