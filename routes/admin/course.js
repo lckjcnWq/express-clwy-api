@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {Course, Category, User} = require('../../models');
+const {Course, Category, User,Chapter } = require('../../models');
 const { Op } = require('sequelize');
 const { filterCourseBody } = require('../../src/utils/BodyUtils');
-const { NotFoundError } = require('../../src/bean/NotFoundError');
-const { getCourse } = require('../../src/api/articleApi');
+const { getCourse,getCategoryCondition } = require('../../src/api/articleApi');
 const { success,fail } = require('../../src/common/ResponseBean');
 function validateIdParam(req, res, next) {
     const { id } = req.params;
@@ -111,6 +110,10 @@ router.post('/create/', async function(req, res, next) {
 //删除指定id的课程
 router.delete('/:id', async function(req, res, next) {
     try {
+        const count = await Chapter.count({ where: { courseId: req.params.id } });
+        if (count > 0) {
+            throw new Error('当前课程有章节，无法删除。');
+        }
         const course = await getCourse(req);
         await course.destroy()
         success(res, '删除课程成功', course)
@@ -139,24 +142,7 @@ router.get('/page', async function(req, res, next) {
         const pageSize = Math.abs(Number(query.pageSize)) || 1
         const offset = (currentPage - 1) * pageSize
 
-        const condition = {
-            attributes: { exclude: ['categoryId', 'userId'] },
-            include: [
-                {
-                    model: Category,
-                    as: 'category',
-                    attributes: ['id', 'name']
-                },
-                {
-                    model: User,
-                    as: 'user',
-                    attributes: ['id', 'username', 'avatar']
-                }
-            ],
-            order: [['id', 'ASC']],
-            offset:offset,
-            limit: pageSize
-        }
+        const condition = getCategoryCondition()
         const {count, rows} = await Course.findAndCountAll(condition)
         success(res, '分页查询成功', {
             courses: rows,

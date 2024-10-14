@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {Category,Course} = require('../../models');
+const {Chapter} = require('../../models');
 const { Op } = require('sequelize');
-const { filterCategoryBody } = require('../../src/utils/BodyUtils');
-const { getCategory } = require('../../src/api/articleApi');
+const { filterChapterBody } = require('../../src/utils/BodyUtils');
+const { getChapter,getChapterCondition } = require('../../src/api/articleApi');
 const { success,fail } = require('../../src/common/ResponseBean');
 function validateIdParam(req, res, next) {
     const { id } = req.params;
@@ -20,26 +20,29 @@ router.get('/', async function(req, res, next) {
         const condition = {
             order: [['id', 'DESC']]
         }
-        const categorys = await Category.findAll(condition)
-        success(res, '查询分类列表成功', categorys)
+        const atricles = await Chapter.findAll(condition)
+        success(res, '查询章节列表成功', atricles)
     } catch (e) {
-        fail(res, '查询分类列表失败',e.message)
+        fail(res, '查询章节列表失败',e.message)
     }
 });
-//查询分类详情
+//查询章节详情
 router.get('/:id', validateIdParam,async function(req, res, next) {
     try {
-        const category = await getCategory(req)
-        if(category){
-            success(res, '查询分类成功', category)
+        const atricle = await getChapter(req)
+        if(atricle){
+            success(res, '查询章节成功', atricle)
         }
     } catch (e) {
-        fail(res, '查询分类失败',e.message)
+        fail(res, '查询章节失败',e.message)
     }
 });
-//模糊查询分类详情
+//模糊查询章节详情
 router.get('/search/', async function(req, res, next) {
     try {
+        console.log('Request URL:', req.url);
+        console.log('Request Query:', req.query);
+
         const query = req.query
         const condition = {
             where: {},
@@ -47,81 +50,84 @@ router.get('/search/', async function(req, res, next) {
         };
 
         // 添加模糊查询条件
-        if (query.name) {
-            condition.where.name = {
-                [Op.like]: `%${query.name}%`
+        if (query.title) {
+            condition.where.title = {
+                [Op.like]: `%${query.title}%`
             };
         }
 
-        const categorys = await Category.findAll(condition)
-        success(res, '模糊查询分类列表成功', categorys)
+        const chapters = await Chapter.findAll(condition)
+        success(res, '模糊查询章节列表成功', chapters)
     } catch (e) {
-        fail(res, '模糊查询分类列表失败', e.message)
+        fail(res, '模糊查询章节列表失败', e.message)
     }
 });
 
-//创建分类
+//创建章节
 router.post('/create/', async function(req, res, next) {
     try {
-        const category = await Category.create(filterCategoryBody(req))
-        success(res, '创建分类成功', category)
+        const article = await Chapter.create(filterChapterBody(req))
+        success(res, '创建章节成功', article)
     } catch (e){
-        fail(res, '创建分类失败', e.message)
+        fail(res, '创建章节失败', e.message)
     }
 })
 
-//删除指定id的分类
+//删除指定id的章节
 router.delete('/:id', async function(req, res, next) {
     try {
-        const category = await getCategory(req);
-
-        const count = await Course.count({ where: { categoryId: req.params.id } });
-        if (count > 0) {
-            throw new Error('当前分类有课程，无法删除。');
-        }
-
-        await category.destroy()
-        success(res, '删除分类成功', category)
+        const chapter = await getChapter(req);
+        await chapter.destroy()
+        success(res, '删除章节成功', chapter)
     } catch (e) {
         fail(res, '删除文件失败', e.message)
     }
 });
 
-//更新分类
+//更新章节
 router.put('/:id', async function(req, res, next) {
     try {
-        const category = await getCategory(req);
-        const body = filterCategoryBody(req);
-        await category.update(body);
-        success(res, '更新分类成功', category)
+        const chapter = await getChapter(req);
+        const body = filterChapterBody(req);
+        await chapter.update(body);
+        success(res, '更新章节成功', chapter)
     } catch (e) {
         fail(res, '更新文件失败', e.message)
     }
 });
 
-//分页查询分类列表
+//分页查询章节列表
 router.get('/page', async function(req, res, next) {
     try {
         const query = req.query
+        if (!query.courseId) {
+            throw new Error('获取章节列表失败，课程ID不能为空。');
+        }
         const currentPage = Math.abs(Number(query.currentPage)) || 1
         const pageSize = Math.abs(Number(query.pageSize)) || 1
         const offset = (currentPage - 1) * pageSize
         const condition = {
+            ...getChapterCondition(),
             order: [['rank', 'ASC'], ['id', 'ASC']],
             offset:offset,
             limit: pageSize
         }
-        // 如果有 name 查询参数，就添加到 where 条件中
-        if (query.name) {
+        condition.where = {
+            courseId: {
+                [Op.eq]: query.courseId
+            }
+        };
+
+        if (query.title) {
             condition.where = {
-                name: {
-                    [Op.like]: `%${query.name}%`
+                title: {
+                    [Op.like]: `%${ query.title }%`
                 }
             };
         }
-        const {count, rows} = await Category.findAndCountAll(condition)
+        const {count, rows} = await Chapter.findAndCountAll(condition)
         success(res, '分页查询成功', {
-            articles: rows,
+            chapters: rows,
             pagination: {
                 total: count,
                 currentPage,

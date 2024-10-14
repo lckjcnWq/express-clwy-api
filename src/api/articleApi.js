@@ -1,4 +1,4 @@
-const {Article,Category,Setting,User,Course} = require('../../models');
+const {Article,Category,Setting,User,Course,Chapter} = require('../../models');
 const { NotFoundError } = require('../../src/bean/NotFoundError');
 
 async function getArticle(req) {
@@ -42,7 +42,30 @@ async function getUser(req) {
 
 async function getCourse(req) {
     const { id } = req.params;
-    const condition = {
+    const condition = getCategoryCondition()
+    const course = await Course.findByPk(id,condition);
+    if (!course) {
+        throw new NotFoundError('初始系统课程未找到，请运行种子文件。')
+    }
+
+    return course;
+}
+
+
+async function getChapter(req) {
+    const { id } = req.params;
+    const condition = getChapterCondition()
+    const chapter = await Chapter.findByPk(id,condition);
+    if (!chapter) {
+        throw new NotFoundError('初始系统课程未找到，请运行种子文件。')
+    }
+
+    return chapter;
+}
+
+
+function getCategoryCondition() {
+    return {
         attributes: { exclude: ['categoryId', 'userId'] },
         include: [
             {
@@ -57,18 +80,33 @@ async function getCourse(req) {
             }
         ]
     }
-    const course = await Course.findByPk(id,condition);
-    if (!course) {
-        throw new NotFoundError('初始系统课程未找到，请运行种子文件。')
-    }
-
-    return course;
 }
+
+/**
+ * 公共方法：关联课程数据
+ * @returns {{include: [{as: string, model, attributes: string[]}], attributes: {exclude: string[]}}}
+ */
+function getChapterCondition() {
+    return {
+        attributes: { exclude: ['courseId'] },
+        include: [
+            {
+                model: Course,
+                as: 'course',
+                attributes: ['id', 'name']
+            }
+        ]
+    }
+}
+
 
 module.exports = {
     getArticle,
     getCategory,
     getSetting,
     getUser,
-    getCourse
+    getCourse,
+    getChapter,
+    getCategoryCondition,
+    getChapterCondition
 }

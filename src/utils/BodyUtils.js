@@ -57,11 +57,27 @@ function filterCourseBody(req) {
     };
 }
 
+/**
+ * 公共方法：白名单过滤
+ * @param req
+ * @returns {{rank: (number|*), video: (string|boolean|MediaTrackConstraints|VideoConfiguration|*), title, courseId: (number|*), content}}
+ */
+function filterChapterBody(req) {
+    return {
+        courseId: req.body.courseId,
+        title: req.body.title,
+        content: req.body.content,
+        video: req.body.video,
+        rank: req.body.rank
+    };
+}
+
 
 module.exports = {
     filterBody,
     filterCategoryBody,
     filterSettingBody,
     filterUserBody,
-    filterCourseBody
+    filterCourseBody,
+    filterChapterBody
 };
