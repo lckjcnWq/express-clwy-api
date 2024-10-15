@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Course.belongsTo(models.Category, { as: 'category' });
       models.Course.belongsTo(models.User, { as: 'user' });
+      models.Course.belongsToMany(models.User, { through: models.Like, foreignKey: 'courseId', as: 'likeUsers' });
       models.Course.hasMany(models.Chapter, { as: 'chapters' });
     }
   }

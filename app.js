@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const cors = require('cors')
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
@@ -26,7 +26,9 @@ const chaptersRouter = require('./routes/js/chapters');
 const articlesRouter = require('./routes/js/articles');
 const settingsRouter = require('./routes/js/settings');
 const searchRouter = require('./routes/js/search');
-
+const authRouter = require('./routes/js/auth');
+const likesRouter = require('./routes/js/likes');
+const userAuth = require('./src/middlewares/user-auth');
 
 const app = express();
 
@@ -36,8 +38,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors());
 app.use('/', indexRouter);
-app.use('/users', adminAuth,usersRouter);
 app.use('/admin/articles',adminAuth, adminArticleRouter);
 app.use('/admin/categories', adminAuth,adminCategoriesRouter);
 app.use('/admin/set', adminAuth,adminSettingRouter);
@@ -54,4 +56,7 @@ app.use('/js/chapters', chaptersRouter);
 app.use('/js/articles', articlesRouter);
 app.use('/js/settings', settingsRouter);
 app.use('/js/search', searchRouter);
+app.use('/js/auth', authRouter);
+app.use('/js/users', userAuth, usersRouter);
+app.use('/js/likes', userAuth,likesRouter);
 module.exports = app;
