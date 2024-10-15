@@ -5,7 +5,7 @@
     "database": "clwy_api",
     "host": "144.24.204.73",
     "dialect": "mysql",
-    "timezone": "+08:00"
+    "timezone": "UTC"
   },
   "test": {
     "username": "root",
@@ -13,7 +13,7 @@
     "database": "clwy_api",
     "host": "144.24.204.73",
     "dialect": "mysql",
-    "timezone": "+08:00"
+    "timezone": "UTC"
   },
   "production": {
     "username": "root",
@@ -21,6 +21,6 @@
     "database": "clwy_api",
     "host": "144.24.204.73",
     "dialect": "mysql",
-    "timezone": "+08:00"
+    "timezone": "UTC"
   }
 }

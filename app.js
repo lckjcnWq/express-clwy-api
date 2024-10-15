@@ -3,12 +3,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
+require('dotenv').config();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 //
 const adminAuth = require('./src/middlewares/admin-auth');
-require('dotenv').config();
 //后台路由文件
 const adminArticleRouter = require('./routes/admin/articles');
 const adminCategoriesRouter = require('./routes/admin/categories');
