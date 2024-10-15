@@ -17,11 +17,20 @@ function validateIdParam(req, res, next) {
 router.get('/', async function(req, res, next) {
 
     try {
+        const query = req.query;
+
         const condition = {
-            order: [['id', 'DESC']]
+            where: {},
+            order: [['rank', 'ASC'], ['id', 'ASC']],
+        };
+
+        if (query.name) {
+            condition.where.name = {
+                [Op.like]: `%${ query.name }%`
+            };
         }
-        const categorys = await Category.findAll(condition)
-        success(res, '查询分类列表成功', categorys)
+        const categories = await Category.findAll(condition);
+        success(res, '查询分类列表成功', categories)
     } catch (e) {
         fail(res, '查询分类列表失败',e.message)
     }

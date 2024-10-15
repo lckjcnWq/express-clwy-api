@@ -89,6 +89,19 @@ router.post('/create/', async function(req, res, next) {
     }
 })
 
+/**
+ * 查询当前登录的用户详情
+ * GET /admin/users/me
+ */
+router.get('/me', async function (req, res) {
+    try {
+        const user = req.user;
+        success(res, '查询当前用户信息成功。', { user });
+    } catch (error) {
+        failure(res, error);
+    }
+});
+
 //更新用户
 router.put('/:id', async function(req, res, next) {
     try {

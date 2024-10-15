@@ -50,26 +50,20 @@ router.get('/search/', async function(req, res, next) {
         };
 
         if (query.categoryId) {
-            condition.where = {
-                categoryId: {
-                    [Op.eq]: query.categoryId
-                }
+            condition.where.categoryId = {
+                [Op.eq]: query.categoryId
             };
         }
 
         if (query.userId) {
-            condition.where = {
-                userId: {
-                    [Op.eq]: query.userId
-                }
+            condition.where.userId = {
+                [Op.eq]: query.userId
             };
         }
 
         if (query.name) {
-            condition.where = {
-                name: {
-                    [Op.like]: `%${ query.name }%`
-                }
+            condition.where.name = {
+                [Op.like]: `%${ query.name }%`
             };
         }
 

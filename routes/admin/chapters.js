@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Chapter} = require('../../models');
+const {Chapter,Course} = require('../../models');
 const { Op } = require('sequelize');
 const { filterChapterBody } = require('../../src/utils/BodyUtils');
 const { getChapter,getChapterCondition } = require('../../src/api/articleApi');
@@ -67,6 +67,7 @@ router.get('/search/', async function(req, res, next) {
 router.post('/create/', async function(req, res, next) {
     try {
         const article = await Chapter.create(filterChapterBody(req))
+        await Course.increment('chaptersCount', { where: { id: chapter.courseId }});
         success(res, '创建章节成功', article)
     } catch (e){
         fail(res, '创建章节失败', e.message)
@@ -78,6 +79,7 @@ router.delete('/:id', async function(req, res, next) {
     try {
         const chapter = await getChapter(req);
         await chapter.destroy()
+        await Course.decrement('chaptersCount', { where: { id: chapter.courseId }});
         success(res, '删除章节成功', chapter)
     } catch (e) {
         fail(res, '删除文件失败', e.message)
@@ -108,21 +110,16 @@ router.get('/page', async function(req, res, next) {
         const offset = (currentPage - 1) * pageSize
         const condition = {
             ...getChapterCondition(),
+            where: {},
             order: [['rank', 'ASC'], ['id', 'ASC']],
             offset:offset,
             limit: pageSize
         }
-        condition.where = {
-            courseId: {
-                [Op.eq]: query.courseId
-            }
-        };
+        condition.where.courseId = query.courseId;
 
         if (query.title) {
-            condition.where = {
-                title: {
-                    [Op.like]: `%${ query.title }%`
-                }
+            condition.where.title = {
+                [Op.like]: `%${ query.title }%`
             };
         }
         const {count, rows} = await Chapter.findAndCountAll(condition)
